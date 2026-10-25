@@ -6,6 +6,8 @@ import solve.Solution;
 import solve.StandardForm;
 import solve.Standardizer;
 
+// Parser -> LinearProgram -> Standardizer -> StandardForm -> SimplexSolver -> Solution
+
 public class Main {
     public static void main(String[] args) {
         /*LinearProgram p = new Parser().parse(System.in);
