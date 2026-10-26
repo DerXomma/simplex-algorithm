@@ -55,10 +55,10 @@ public final class LinearProgram {
         StringBuilder sb = new StringBuilder();
 
         for (double coef : objectiveCoefficients) {
-            sb.append(coef).append(" ");
+            sb.append(coef).append("|");
         }
 
-        sb.append("-> ").append(sense);
+        sb.append("->").append(sense);
 
         for (Constraint cons : constraints) {
             sb.append("\n").append(cons);

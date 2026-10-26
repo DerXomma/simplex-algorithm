@@ -43,9 +43,9 @@ public final class Constraint {
         StringBuilder sb = new StringBuilder();
 
         for (double coef : coefficients) {
-            sb.append(coef).append(" ");
+            sb.append(coef).append("|");
         }
-        sb.append(relation).append(" ");
+        sb.append(relation).append("|");
         sb.append(rhs);
 
         return sb.toString();
