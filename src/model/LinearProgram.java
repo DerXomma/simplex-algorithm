@@ -5,17 +5,17 @@ import java.util.List;
 
 public final class LinearProgram {
     private final Sense sense;
-    private final double[] objectiveCoefficients;
+    private final double[] coefficients;
     private final List<Constraint> constraints;
 
-    public LinearProgram(Sense sense, double[] objectiveCoefficients, List<Constraint> constraints) {
+    public LinearProgram(Sense sense, double[] coefficients, List<Constraint> constraints) {
         if (sense == null) {
             throw new IllegalArgumentException("Тип оптимизации не должен быть NULL");
         }
-        if (objectiveCoefficients == null || objectiveCoefficients.length == 0) {
+        if (coefficients == null || coefficients.length == 0) {
             throw new IllegalArgumentException("Строка коэффициентов не может быть пустой");
         }
-        for (double coef : objectiveCoefficients) {
+        for (double coef : coefficients) {
             if (!Double.isFinite(coef)) {
                 throw new IllegalArgumentException("Коэффициенты должны быть конечными");
             }
@@ -28,13 +28,13 @@ public final class LinearProgram {
                 throw new IllegalArgumentException("Ограничение в наборе не может быть пустым");
             }
             int consCoefs = cons.getCoefficients().length;
-            if (consCoefs != objectiveCoefficients.length) {
-                throw new IllegalArgumentException("Размерность ограничения (" + consCoefs + ") должна совпадать с размерностью целевой функции (" + objectiveCoefficients.length + ")");
+            if (consCoefs != coefficients.length) {
+                throw new IllegalArgumentException("Размерность ограничения (" + consCoefs + ") должна совпадать с размерностью целевой функции (" + coefficients.length + ")");
             }
         }
 
         this.sense = sense;
-        this.objectiveCoefficients = objectiveCoefficients.clone();
+        this.coefficients = coefficients.clone();
         this.constraints = List.copyOf(constraints);
     }
 
@@ -42,8 +42,8 @@ public final class LinearProgram {
         return sense;
     }
 
-    public double[] getObjectiveCoefficients() {
-        return objectiveCoefficients.clone();
+    public double[] getCoefficients() {
+        return coefficients.clone();
     }
 
     public List<Constraint> getConstraints() {
@@ -54,11 +54,12 @@ public final class LinearProgram {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for (double coef : objectiveCoefficients) {
+        sb.append("f= ");
+        for (double coef : coefficients) {
             sb.append(coef).append("|");
         }
 
-        sb.append("->").append(sense);
+        sb.append(" ->").append(sense);
 
         for (Constraint cons : constraints) {
             sb.append("\n").append(cons);
