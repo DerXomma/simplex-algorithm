@@ -26,6 +26,20 @@ public final class Constraint {
         this.rhs = rhs;
     }
 
+    public Constraint(Constraint other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Объект для копии не может null");
+        }
+
+        this.coefficients = other.coefficients.clone();
+        this.relation = other.relation;
+        this.rhs = other.rhs;
+    }
+
+    public int getCoefficientCount() {
+        return coefficients.length;
+    }
+
     public double[] getCoefficients() {
         return coefficients.clone();
     }

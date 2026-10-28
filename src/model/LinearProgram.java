@@ -1,14 +1,11 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public final class LinearProgram {
     private final Sense sense;
     private final double[] coefficients;
-    private final List<Constraint> constraints;
+    private final Constraint[] constraints;
 
-    public LinearProgram(Sense sense, double[] coefficients, List<Constraint> constraints) {
+    public LinearProgram(Sense sense, double[] coefficients, Constraint[] constraints) {
         if (sense == null) {
             throw new IllegalArgumentException("Тип оптимизации не должен быть NULL");
         }
@@ -20,14 +17,14 @@ public final class LinearProgram {
                 throw new IllegalArgumentException("Коэффициенты должны быть конечными");
             }
         }
-        if (constraints == null || constraints.isEmpty()) {
+        if (constraints == null || constraints.length == 0) {
             throw new IllegalArgumentException("Набор ограничений не может быть пустым");
         }
         for (Constraint cons : constraints) {
             if (cons == null) {
                 throw new IllegalArgumentException("Ограничение в наборе не может быть пустым");
             }
-            int consCoefs = cons.getCoefficients().length;
+            int consCoefs = cons.getCoefficientCount();
             if (consCoefs != coefficients.length) {
                 throw new IllegalArgumentException("Размерность ограничения (" + consCoefs + ") должна совпадать с размерностью целевой функции (" + coefficients.length + ")");
             }
@@ -35,7 +32,7 @@ public final class LinearProgram {
 
         this.sense = sense;
         this.coefficients = coefficients.clone();
-        this.constraints = List.copyOf(constraints);
+        this.constraints = constraints.clone();
     }
 
     public Sense getSense() {
@@ -46,8 +43,8 @@ public final class LinearProgram {
         return coefficients.clone();
     }
 
-    public List<Constraint> getConstraints() {
-        return new ArrayList<>(constraints);
+    public Constraint[] getConstraints() {
+        return constraints.clone();
     }
 
     @Override
