@@ -18,6 +18,7 @@ public class Main {
         int[] initialBasis = { 1, 0, 4 };          // x2, x1, x5
         boolean[] artificial = { false, false, false, false, false };
         StandardForm form = new StandardForm( Sense.MIN,5, c, A, b, initialBasis, artificial);
-        System.out.println(form);
+        Tableau tableau = new Tableau(form);
+        System.out.println(tableau);
     }
 }
