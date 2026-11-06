@@ -11,35 +11,40 @@ public final class SimplexSolver {
             throw new IllegalArgumentException("Канонический вид не может быть null");
         }
 
+        // Приводим задачу к внутренней форме, всегда min и искусственные переменные штрафуются на big-M
         Tableau tableau = new Tableau(toSolverForm(form));
         int rowCount = tableau.getRowCount();
         boolean[] artificial = form.getArtificialVariables();
 
         boolean optimal = false;
         for (int iter = 0; iter < MAX_ITER; iter++) {
+            // Ищем столбец, по которому можно улучшить целевую функцию
             int entering = chooseEntering(tableau, artificial);
-            if (entering == -1) {
+            if (entering == -1) { // если такого нет, то текущий базис оптимален
                 optimal = true;
                 break;
             }
 
+            // По правилу минимального отношения определяем, какая базисная переменная выйдет из базиса
             int leaving = chooseLeaving(tableau, entering);
-            if (leaving == -1) {
+            if (leaving == -1) { // если такого нет, то значит задача неограничена
                 return Solution.unbounded();
             }
 
-            tableau.pivot(leaving, entering);
+            tableau.pivot(leaving, entering); // шаг симплекс-метода
         }
         if (!optimal) {
             throw new IllegalStateException("Симплекс-метод не сошелся за " + MAX_ITER + " итераций");
         }
 
+        // Проверка: если какая-то искусственная переменная осталась больше 0, то значит, исходные ограничения несовместны
         for (int i = 0; i < rowCount; i++) {
             if (artificial[tableau.getBasisVariable(i)] && tableau.getRhs(i) > EPS) {
                 return Solution.infeasible();
             }
         }
 
+        // Далее собирается решение
         int n = form.getOriginalVariableCount();
         double[] x = new double[n];
         for(int i = 0; i < rowCount; i++) {
@@ -50,7 +55,7 @@ public final class SimplexSolver {
         }
 
         double[] cOrig = form.getObjectiveCoefficients();
-        double f = 0.0;
+        double f = 0.0; // пересчет f
         for (int j = 0; j < n; j++) {
             f += cOrig[j] * x[j];
         }
@@ -58,10 +63,12 @@ public final class SimplexSolver {
     }
 
     private int chooseEntering(Tableau tableau, boolean[] artificial) {
-        int bestCol = -1;
+        int bestCol = -1; // вернет -1, если положительных Δ_j нет
         double bestDelta = EPS;
         for (int j = 0; j < tableau.getColCount(); j++) {
-            if (artificial[j]) continue;
+            if (artificial[j]) {
+                continue;
+            }
             double d = tableau.getReducedCost(j);
             if (d > bestDelta) {
                 bestDelta = d;
@@ -72,7 +79,7 @@ public final class SimplexSolver {
     }
 
     private int chooseLeaving(Tableau tableau, int enteringCol) {
-        int bestRow = -1;
+        int bestRow = -1; // вернет -1, если если все коэффициенты в столбце меньше или равны 0
         double bestRatio = Double.POSITIVE_INFINITY;
         for (int i = 0; i < tableau.getRowCount(); i++) {
             double a = tableau.getCoefficient(i, enteringCol);
@@ -95,9 +102,9 @@ public final class SimplexSolver {
         double[] c = form.getObjectiveCoefficients();
         boolean[] artificial = form.getArtificialVariables();
 
-        double scale = 1.0;
+        double scale = 1.0; // выбирается наибольшим значением из коэффициентов и правых частей
         for (int j = 0; j < c.length; j++) {
-            if (maximize) {
+            if (maximize) { // перевод задачи max в min
                 c[j] = -c[j];
             }
             if (!artificial[j]) {
@@ -108,6 +115,8 @@ public final class SimplexSolver {
         for (double b : rhs) {
             scale = Math.max(scale, Math.abs(b));
         }
+
+        // Штрафуем искусственные переменные на масштабированную M
         double M = 1e9 * scale;
         if (!Double.isFinite(M)) {
             throw new IllegalStateException("M переполнено");
