@@ -9,7 +9,7 @@ public final class Solution {
 
     private Solution(Status status, double[] variables, double objectiveValue) {
         this.status = status;
-        this.variables = variables;
+        this.variables = variables.clone();
         this.objectiveValue = objectiveValue;
     }
 

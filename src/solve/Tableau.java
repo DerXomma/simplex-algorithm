@@ -64,6 +64,9 @@ public final class Tableau {
             coefficients[pivotRow][j] /= pivot;
         }
         rhs[pivotRow] /= pivot;
+        if (Math.abs(rhs[pivotRow]) < EPS) {
+            rhs[pivotRow] = 0.0;
+        }
 
         // Меняем базис
         basis[pivotRow] = pivotCol;
@@ -84,6 +87,9 @@ public final class Tableau {
                 coefficients[i][j] -= factor * coefficients[pivotRow][j];
             }
             rhs[i] -= factor * rhs[pivotRow];
+            if (Math.abs(rhs[i]) < EPS) {
+                rhs[i] = 0.0;
+            }
         }
 
         // Пересчитываем строку Δ и значение f
