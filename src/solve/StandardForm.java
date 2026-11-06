@@ -150,7 +150,6 @@ public final class StandardForm {
             }
             sb.append(" =").append(rhs[i]).append("\n");
         }
-        sb.append("\n");
 
         sb.append("initialBasis: ");
         for (int idx : initialBasis) {

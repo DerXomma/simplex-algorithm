@@ -59,7 +59,7 @@ public final class Constraint {
         for (double coef : coefficients) {
             sb.append(coef).append("|");
         }
-        sb.append(relation).append("|");
+        sb.append(" ").append(relation.getSymbol());
         sb.append(rhs);
 
         return sb.toString();

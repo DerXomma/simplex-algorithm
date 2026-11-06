@@ -50,7 +50,7 @@ public final class Solution {
         for (double v : variables) {
             sb.append(v).append("|");
         }
-        sb.append(" f= ").append(objectiveValue);
+        sb.append("\nf= ").append(objectiveValue);
 
         return sb.toString();
     }
